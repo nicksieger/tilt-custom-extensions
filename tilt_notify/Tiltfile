@@ -1,0 +1,1 @@
+local_resource('tilt-notify', serve_cmd='./tilt-notify', labels=['extensions'])

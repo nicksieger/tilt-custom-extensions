@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# Send a message to OS-level notification center or toast notification when Tilt
+# finishes building resources
+#
+# usage: tilt-notify [options]
+#
+# Options are passed as command-line arguments to `tilt get` (e.g., --port).
+
+TILT_CMD=${TILT_CMD:-tilt}
+
+notify_osascript() {
+    local title= subtitle= message=
+    title="$1"
+    shift
+    subtitle="$1"
+    shift
+    message="$@"
+    
+    cat <<EOF | osascript -
+display notification "$message" with title "$title" subtitle "$subtitle"
+EOF
+}
+
+notify_echo() {
+}
+
+notify() {
+    if type -p osascript > /dev/null; then
+        notify_osascript "$@"
+    else
+        notify_echo "$@"
+    fi
+}
+
+IFS=:
+# Don't trigger a notification for these statuses so that notification center is
+# not too noisy
+ignore_statuses=( in_progress not_applicable pending )
+statuses=( )
+loop=1
+
+while [ "$loop" ]; do
+    $TILT_CMD get "$@" --watch-only uiresources -o jsonpath='{.metadata.name}{":"}{.status.updateStatus}{"\n"}' | \
+        while read resource status; do
+            if [ "${statuses[$resource]}" = "$status" ]; then
+                continue
+            fi
+
+            statuses[$resource]=$status
+
+            if [[ "${ignore_statuses[@]}" =~ $status ]]; then
+                echo Ignoring $resource $status
+                continue
+            fi
+
+            echo $resource updated:  $status
+            notify Tilt $resource $status
+        done
+    exitst=$?
+    if [ $exitst = 1 ]; then
+        loop=
+    fi
+done

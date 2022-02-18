@@ -1,0 +1,11 @@
+v1alpha1.extension_repo(
+    'tilt-custom-extensions',
+    url='https://github.com/nicksieger/tilt-custom-extensions'
+)
+v1alpha1.extension(
+    'tilt-notify',
+    repo_name='tilt-custom-extensions',
+    repo_path='tilt-notify'
+)
+
+

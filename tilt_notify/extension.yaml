@@ -1,0 +1,14 @@
+apiVersion: tilt.dev/v1alpha1
+kind: ExtensionRepo
+metadata:
+  name: tilt-custom-extensions
+spec:
+  url: https://github.com/nicksieger/tilt-custom-extensions
+---
+apiVersion: tilt.dev/v1alpha1
+kind: Extension
+metadata:
+  name: tilt-notify
+spec:
+  repoName: tilt-custom-extensions
+  repoPath: tilt-notify
