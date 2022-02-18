@@ -23,6 +23,8 @@ EOF
 }
 
 notify_echo() {
+    echo "$@"
+    return 0
 }
 
 notify() {
