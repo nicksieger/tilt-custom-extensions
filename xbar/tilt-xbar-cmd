@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Companion script to tilt-xbar plugin for bootstrapping environment ($PATH) and
+# implementing Tilt control commands.
+
+script=$(readlink $BASH_SOURCE || echo $BASH_SOURCE)
+ext_dir=$(cd $(dirname $script) && pwd)
+
+# This script may be run as a child of a process that is not a shell, where
+# $PATH may not include the tilt program. In that case, try to find tilt by
+# sourcing the full $PATH from the user's shell profile.
+if ! type -p tilt > /dev/null; then
+    # Get full path from user's shell profile
+    user_shell=$(dscl . -read $HOME UserShell | awk '{ print $2 }')
+    export PATH=$($user_shell -ic 'echo $PATH')
+fi
+
+if ! type -p tilt > /dev/null; then
+    echo Tilt not found
+    exit 1
+fi
+
+case $1 in
+    open)
+        # Present an OS File dialog to allow the user to choose the
+        # Tiltfile to use, then (re-)start Tilt with that Tiltfile.
+        tiltfile=$(osascript -e "set f to POSIX path of (choose file with prompt \"Choose a Tiltfile\")" 2> /dev/null)
+        if [ -f "$tiltfile" ]; then
+            $ext_dir/tiltctl reopen $tiltfile
+        fi
+        ;;
+
+    restart)
+        $ext_dir/tiltctl restart
+        ;;
+
+    stop)
+        $ext_dir/tiltctl stop
+        ;;
+
+    down)
+        $ext_dir/tiltctl down
+        ;;
+esac

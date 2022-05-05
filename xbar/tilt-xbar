@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#
+#  <xbar.title>Tilt</xbar.title>
+#  <xbar.version>v1.0</xbar.version>
+#  <xbar.author>Nick Sieger</xbar.author>
+#  <xbar.author.github>nicksieger</xbar.author.github>
+#  <xbar.desc>Control Tilt from the menubar instead of the command line.</xbar.desc>
+#  <xbar.abouturl>https://tilt.dev/</xbar.abouturl>
+
+script=$(readlink $BASH_SOURCE || echo $BASH_SOURCE)
+ext_dir=$(cd $(dirname $script) && pwd)
+
+if ! type -p tilt; then
+    # Get full path from user's shell profile
+    user_shell=$(dscl . -read $HOME UserShell | awk '{ print $2 }')
+    export PATH=$($user_shell -ic 'echo $PATH')
+fi
+
+echo -n "| templateImage="; base64 "$ext_dir/tilt-icon.png"
+echo "---"
+
+if ! type -p tilt > /dev/null; then
+    echo "Tilt not installed"
+    echo "Install... | href=https://docs.tilt.dev/install.html"
+    exit
+fi
+
+tilt version | head -1
+echo "Open Tiltfile... | shell=\"$ext_dir/tilt-xbar-cmd\" | param1=open | refresh=true"
+
+pid=$("$ext_dir/tiltctl" pid)
+if [ "$pid" ]; then
+    echo "Restart Tilt | shell=\"$ext_dir/tilt-xbar-cmd\" | param1=restart | refresh=true"
+    echo "Stop Tilt | shell=\"$ext_dir/tilt-xbar-cmd\" | param1=stop | refresh=true"
+    echo "Down Tilt | shell=\"$ext_dir/tilt-xbar-cmd\" | param1=down | refresh=true"
+    echo ---
+    echo "Open Dashboard | href=http://localhost:10350/"
+    echo "Resources"
+    max_items=12
+    item_count=$(tilt get uiresources -o jsonpath="{range .items[*]}{'.'}{end}" | wc -c)
+    IFS='|'
+    tilt get uiresources -o jsonpath="{range .items[*]}{.metadata.name}{'|'}{.status.updateStatus}{'|'}{.status.runtimeStatus}{'\n'}{end}" | head -n $max_items | sort | \
+        while read res update runtime; do
+            url="http://localhost:10350/r/$res/overview"
+            if [ "$update" = error -o "$runtime" = error ]; then
+                echo ":x: $res | href=$url | color=red"
+            else
+                echo ":white_check_mark: $res | href=$url"
+            fi
+        done
+    if [ $item_count -gt $max_items ]; then
+        echo '... | href=http://localhost:10350/'
+    fi
+fi
+
