@@ -8,8 +8,9 @@
 #  <xbar.image>https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/xbar/tilt-xbar.png</xbar.image>
 #  <xbar.abouturl>https://tilt.dev/</xbar.abouturl>
 
-script=$(readlink $BASH_SOURCE || echo $BASH_SOURCE)
-ext_dir=$(cd $(dirname $script) && pwd)
+script="$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")"
+ext_dir="$(dirname "$script")"
+ext_dir="$(cd "$ext_dir" && pwd)"
 
 if ! type -p tilt; then
     # Get full path from user's shell profile

@@ -3,8 +3,9 @@
 # Companion script to tilt-xbar plugin for bootstrapping environment ($PATH) and
 # implementing Tilt control commands.
 
-script=$(readlink $BASH_SOURCE || echo $BASH_SOURCE)
-ext_dir=$(cd $(dirname $script) && pwd)
+script="$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")"
+ext_dir="$(dirname "$script")"
+ext_dir="$(cd "$ext_dir" && pwd)"
 
 # This script may be run as a child of a process that is not a shell, where
 # $PATH may not include the tilt program. In that case, try to find tilt by
