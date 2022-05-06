@@ -26,19 +26,19 @@ case $1 in
         # Tiltfile to use, then (re-)start Tilt with that Tiltfile.
         tiltfile=$(osascript -e "set f to POSIX path of (choose file with prompt \"Choose a Tiltfile\")" 2> /dev/null)
         if [ -f "$tiltfile" ]; then
-            $ext_dir/tiltctl reopen $tiltfile
+            "$ext_dir/tiltctl" reopen "$tiltfile"
         fi
         ;;
 
     restart)
-        $ext_dir/tiltctl restart
+        "$ext_dir/tiltctl" restart
         ;;
 
     stop)
-        $ext_dir/tiltctl stop
+        "$ext_dir/tiltctl" stop
         ;;
 
     down)
-        $ext_dir/tiltctl down
+        "$ext_dir/tiltctl" down
         ;;
 esac
