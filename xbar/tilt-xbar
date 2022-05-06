@@ -5,6 +5,7 @@
 #  <xbar.author>Nick Sieger</xbar.author>
 #  <xbar.author.github>nicksieger</xbar.author.github>
 #  <xbar.desc>Control Tilt from the menubar instead of the command line.</xbar.desc>
+#  <xbar.image>https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/xbar/tilt-xbar.png</xbar.image>
 #  <xbar.abouturl>https://tilt.dev/</xbar.abouturl>
 
 script=$(readlink $BASH_SOURCE || echo $BASH_SOURCE)
