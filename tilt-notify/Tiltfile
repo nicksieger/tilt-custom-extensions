@@ -1,1 +1,1 @@
-local_resource('tilt-notify', serve_cmd='./tilt-notify', labels=['extensions'])
+local_resource('tilt-notifier', serve_cmd='./tilt-notify', labels=['extensions'])

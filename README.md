@@ -9,7 +9,7 @@ This is a collection of random extra Tilt extensions and sample Tiltfiles that d
 A simple extension that sends Tilt build results to the Mac OS notification center. You can install into any running Tilt with:
 
 ```
-curl -s https://github.com/nicksieger/tilt-custom-extensions/blob/main/tilt_notify/extension.yaml | tilt apply -f -
+curl -s https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/tilt-notify/extension.yaml | tilt apply -f -
 ```
 
 Or you can add it to your Tiltfile with:
