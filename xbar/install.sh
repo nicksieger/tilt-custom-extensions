@@ -17,4 +17,4 @@ chmod 755 tilt-xbar tilt-xbar-cmd tiltctl
 
 cd "${xbar_plugins}"
 rm -f tilt.*.sh
-ln -s tilt/tilt-xbar tilt.2s.sh
+ln -s "${tilt_xbar}/tilt-xbar" tilt.2s.sh
