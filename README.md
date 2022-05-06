@@ -6,13 +6,17 @@ This is a collection of random extra Tilt extensions and sample Tiltfiles that d
 
 ## tilt_notify
 
-A simple extension that sends Tilt build results to the Mac OS notification center. You can install into any running Tilt with:
+A simple extension that sends Tilt build results to the Mac OS notification center.
+
+### Install
+
+You can install into any running Tilt with:
 
 ```
 curl -s https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/tilt-notify/extension.yaml | tilt apply -f -
 ```
 
-Or you can add it to your Tiltfile with:
+Or you can add it to your Tiltfile:
 
 ```starlark
 v1alpha1.extension_repo(
@@ -24,4 +28,16 @@ v1alpha1.extension(
     repo_name='tilt-custom-extensions',
     repo_path='tilt-notify'
 )
+```
+
+## tilt-xbar
+
+An [xbar](https://xbarapp.com/) plugin to control Tilt from the macOS menubar.
+
+### Install
+
+1. Install and run [xbar](https://xbarapp.com/)
+2. Install the plugin with the following command:
+```
+curl -sL https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/xbar/install.sh | bash 
 ```
