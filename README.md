@@ -4,7 +4,7 @@ Tilt extensions to customize your Tilt setup and do useful things
 
 This is a collection of random extra Tilt extensions and sample Tiltfiles that don't fit in the main tilt-extensions repository.
 
-## tilt_notify
+## tilt-notify
 
 A simple extension that sends Tilt build results to the Mac OS notification center.
 
