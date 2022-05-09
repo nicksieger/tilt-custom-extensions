@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Control Tilt as a background process.
+# Tiltctl: Control Tilt as a background process.
 #
 
 if ! type -p tilt > /dev/null; then
@@ -12,6 +12,10 @@ export TILT_PORT=${TILT_PORT-10350}
 export TILT_WEB_MODE=${TILT_WEB_MODE-prod}
 
 tilt_pid=$(tilt get session -o jsonpath='{.items[0].status.pid}' 2> /dev/null)
+
+current_tiltfile() {
+    tilt get session -o jsonpath='{.items[0].spec.tiltfilePath}' 2> /dev/null
+}
 
 tilt_start() {
     if [ "$tilt_pid" ]; then
@@ -30,15 +34,21 @@ tilt_start() {
     return 0
 }
 
-current_tiltfile() {
-    tilt get session -o jsonpath='{.items[0].spec.tiltfilePath}' 2> /dev/null
-}
-
 tilt_stop() {
     if [ "$tilt_pid" ]; then
         kill $tilt_pid
     fi
     return 0
+}
+
+tilt_open() {
+    if type -p open > /dev/null; then
+        open $1
+    elif type -p xdg-open > /dev/null; then
+        xdg-open $1
+    else
+        echo "Please open $1 in your browser."
+    fi
 }
 
 cmd=$1
@@ -63,14 +73,14 @@ case $cmd in
 
     open)
         tilt_start "$tiltfile"
-        open http://localhost:$TILT_PORT
+        tilt_open http://localhost:$TILT_PORT
         ;;
 
     reopen)
         tilt_stop
         tilt_pid=
         tilt_start "$tiltfile"
-        open http://localhost:$TILT_PORT
+        tilt_open http://localhost:$TILT_PORT
         ;;
 
     down)
@@ -84,6 +94,6 @@ case $cmd in
         ;;
 
     *)
-        echo "usage: tilt-daemon <start|stop> [Tiltfile]"
+        echo "usage: tiltctl <start|stop> [Tiltfile]"
         ;;
 esac
