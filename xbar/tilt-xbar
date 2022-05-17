@@ -12,7 +12,7 @@ script="$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")"
 ext_dir="$(dirname "$script")"
 ext_dir="$(cd "$ext_dir" && pwd)"
 
-if ! type -p tilt; then
+if ! type -p tilt > /dev/null; then
     # Get full path from user's shell profile
     user_shell=$(dscl . -read $HOME UserShell | awk '{ print $2 }')
     export PATH=$($user_shell -ic 'echo $PATH')
