@@ -22,15 +22,15 @@ tilt_start() {
         return 0
     fi
 
-    local tiltfile=${1-./Tiltfile}
-    if [ ! -f $tiltfile ]; then
-        echo "No Tiltfile specified" >&2
-        exit 1
+    local args=( --legacy=false )
+    local tiltfile=${1:-./Tiltfile}
+    if [ -f $tiltfile ]; then
+        args=( ${args[@]} -f $tiltfile )
+        cd $(dirname $tiltfile)
     fi
 
-    cd $(dirname $tiltfile)
     set -m
-    tilt up --legacy=false -f $tiltfile >/dev/null 2>&1 &
+    tilt up ${args[@]} >/dev/null 2>&1 &
     return 0
 }
 
