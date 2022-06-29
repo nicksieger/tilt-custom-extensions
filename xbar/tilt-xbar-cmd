@@ -3,7 +3,7 @@
 # Companion script to tilt-xbar plugin for bootstrapping environment ($PATH) and
 # implementing Tilt control commands.
 
-script="$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")"
+script="$(readlink "${BASH_SOURCE[0]}" || echo "${BASH_SOURCE[0]}")"
 ext_dir="$(dirname "$script")"
 ext_dir="$(cd "$ext_dir" && pwd)"
 
@@ -12,8 +12,10 @@ ext_dir="$(cd "$ext_dir" && pwd)"
 # sourcing the full $PATH from the user's shell profile.
 if ! type -p tilt > /dev/null; then
     # Get full path from user's shell profile
-    user_shell=$(dscl . -read $HOME UserShell | awk '{ print $2 }')
-    export PATH=$($user_shell -ic 'echo $PATH')
+    user_shell=$(dscl . -read "$HOME" UserShell | awk '{ print $2 }')
+    # shellcheck disable=SC2016
+    PATH=$($user_shell -ic 'echo $PATH')
+    export PATH
 fi
 
 if ! type -p tilt > /dev/null; then

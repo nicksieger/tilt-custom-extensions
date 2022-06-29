@@ -8,7 +8,7 @@ tilt_xbar="${xbar_plugins}/tilt"
 
 mkdir -p "${tilt_xbar}"
 cd "${tilt_xbar}"
-rm -f *
+rm -f -- *
 curl -sLO "${url}/tilt-icon.png"
 curl -sLO "${url}/tilt-xbar"
 curl -sLO "${url}/tilt-xbar-cmd"

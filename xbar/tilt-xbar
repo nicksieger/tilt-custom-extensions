@@ -8,14 +8,16 @@
 #  <xbar.image>https://raw.githubusercontent.com/nicksieger/tilt-custom-extensions/main/xbar/tilt-xbar.png</xbar.image>
 #  <xbar.abouturl>https://tilt.dev/</xbar.abouturl>
 
-script="$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")"
+script="$(readlink "${BASH_SOURCE[0]}" || echo "${BASH_SOURCE[0]}")"
 ext_dir="$(dirname "$script")"
 ext_dir="$(cd "$ext_dir" && pwd)"
 
 if ! type -p tilt > /dev/null; then
     # Get full path from user's shell profile
-    user_shell=$(dscl . -read $HOME UserShell | awk '{ print $2 }')
-    export PATH=$($user_shell -ic 'echo $PATH')
+    user_shell=$(dscl . -read "$HOME" UserShell | awk '{ print $2 }')
+    # shellcheck disable=SC2016
+    PATH=$($user_shell -ic 'echo $PATH')
+    export PATH
 fi
 
 echo -n "| templateImage="; base64 "$ext_dir/tilt-icon.png"
@@ -42,15 +44,15 @@ if [ "$pid" ]; then
     item_count=$(tilt get uiresources -o jsonpath="{range .items[*]}{'.'}{end}" | wc -c)
     IFS='|'
     tilt get uiresources -o jsonpath="{range .items[*]}{.metadata.name}{'|'}{.status.updateStatus}{'|'}{.status.runtimeStatus}{'\n'}{end}" | head -n $max_items | sort | \
-        while read res update runtime; do
+        while read -r res update runtime; do
             url="http://localhost:10350/r/$res/overview"
-            if [ "$update" = error -o "$runtime" = error ]; then
+            if [ "$update" = error ] || [ "$runtime" = error ]; then
                 echo ":x: $res | href=$url | color=red"
             else
                 echo ":white_check_mark: $res | href=$url"
             fi
         done
-    if [ $item_count -gt $max_items ]; then
+    if [ "$item_count" -gt "$max_items" ]; then
         echo '... | href=http://localhost:10350/'
     fi
 fi

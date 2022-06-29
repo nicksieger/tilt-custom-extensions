@@ -24,28 +24,29 @@ tilt_start() {
 
     local args=( --legacy=false )
     local tiltfile=${1:-./Tiltfile}
-    if [ -f $tiltfile ]; then
-        args=( ${args[@]} -f $tiltfile )
-        cd $(dirname $tiltfile)
+    if [ -f "$tiltfile" ]; then
+        args=( "${args[@]}" -f "$tiltfile" )
+        # shellcheck disable=SC2164
+        cd "$(dirname "$tiltfile")"
     fi
 
     set -m
-    tilt up ${args[@]} >/dev/null 2>&1 &
+    tilt up "${args[@]}" >/dev/null 2>&1 &
     return 0
 }
 
 tilt_stop() {
     if [ "$tilt_pid" ]; then
-        kill $tilt_pid
+        kill "$tilt_pid"
     fi
     return 0
 }
 
 tilt_open() {
     if type -p open > /dev/null; then
-        open $1
+        open "$1"
     elif type -p xdg-open > /dev/null; then
-        xdg-open $1
+        xdg-open "$1"
     else
         echo "Please open $1 in your browser."
     fi
@@ -73,24 +74,24 @@ case $cmd in
 
     open)
         tilt_start "$tiltfile"
-        tilt_open http://localhost:$TILT_PORT
+        tilt_open "http://localhost:$TILT_PORT"
         ;;
 
     reopen)
         tilt_stop
         tilt_pid=
         tilt_start "$tiltfile"
-        tilt_open http://localhost:$TILT_PORT
+        tilt_open "http://localhost:$TILT_PORT"
         ;;
 
     down)
         tiltfile=$(current_tiltfile)
         tilt_stop
-        tilt down -f $tiltfile
+        tilt down -f "$tiltfile"
         ;;
 
     pid)
-        echo $tilt_pid
+        echo "$tilt_pid"
         ;;
 
     *)
