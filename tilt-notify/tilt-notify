@@ -10,12 +10,12 @@
 TILT_CMD=${TILT_CMD:-tilt}
 
 notify_osascript() {
-    local title= subtitle= message=
+    local title='' subtitle='' message=''
     title="$1"
     shift
     subtitle="$1"
     shift
-    message="$@"
+    message="$*"
     
     cat <<EOF | osascript -
 display notification "$message" with title "$title" subtitle "$subtitle"
@@ -44,20 +44,20 @@ loop=1
 
 while [ "$loop" ]; do
     $TILT_CMD get "$@" --watch-only uiresources -o jsonpath='{.metadata.name}{":"}{.status.updateStatus}{"\n"}' | \
-        while read resource status; do
+        while read -r resource status; do
             if [ "${statuses[$resource]}" = "$status" ]; then
                 continue
             fi
 
             statuses[$resource]=$status
 
-            if [[ "${ignore_statuses[@]}" =~ $status ]]; then
-                echo Ignoring $resource $status
+            if [[ "${ignore_statuses[*]}" =~ $status ]]; then
+                echo "Ignoring $resource $status"
                 continue
             fi
 
-            echo $resource updated:  $status
-            notify Tilt $resource $status
+            echo "$resource updated:  $status"
+            notify Tilt "$resource" "$status"
         done
     exitst=$?
     if [ $exitst = 1 ]; then
