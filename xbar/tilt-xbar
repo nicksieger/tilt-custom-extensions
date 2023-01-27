@@ -20,7 +20,7 @@ if ! type -p tilt > /dev/null; then
     export PATH
 fi
 
-echo -n "| templateImage="; base64 "$ext_dir/tilt-icon.png"
+echo -n "| templateImage="; /usr/bin/base64 -i "$ext_dir/tilt-icon.png" -o -
 echo "---"
 
 if ! type -p tilt > /dev/null; then
